@@ -11,3 +11,4 @@ metedata.csv sould have 192510 but has 191175 entries?
 
 Use os library to join directories instead
 
+Guarentees on json documents?
