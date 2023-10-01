@@ -1,11 +1,11 @@
 ## Returns an array of array of tuples
 ## element at ith position is the array of top100 tuples
-## Tuple entries being (Qnum, CORDid, Rank, Score)
+## Tuple entries being (CORDid, Rank, Score)
 def rt100(filename):
     with open(filename, "r") as f:
         file_content = f.read()
 
-    all_q100 = []
+    all_q100 = {}
     lines = file_content.splitlines()
     n_lines = len(lines) - (len(lines) % 100)
 
@@ -18,9 +18,9 @@ def rt100(filename):
                 print(words)
             ## 0       1       2         3      4        5
             ##Qnum    ign     cordid   rank relevance   ign
-            relevant_tuple = (words[0], words[2], words[3], words[4])
+            relevant_tuple = (words[2], words[3], words[4])
             thisQ.append(relevant_tuple)
-        all_q100.append(thisQ)
+        all_q100[int(words[0])] = thisQ
     return all_q100
 
 
