@@ -15,3 +15,5 @@ Guarentees on json documents?
 Add matadata to json reads. Include Bibrefs?
 
 What happens when there is neither pdf and pmc
+
+Updated word2vec implementations by changing malloc.h ->stdlib.h
