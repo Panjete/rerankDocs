@@ -45,19 +45,28 @@ out_ranks = {}
 qnums_sorted = sorted(qmapping.keys())
 for qnum in qnums_sorted:
     top100 = t40t100[qnum] # top 100 for this topic
-    q_query, q_question, q_narr = qmapping(qnum) # get all data of this topic
+    q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
     words = q_question ### TODO: Analyse choice
     this_q = {} 
 
     for (corduid, _, _) in top100:
-        pdf_path, pmc_path = file_locs_mapping(corduid)
+        pdf_path, pmc_path = file_locs_mapping[corduid]
         doc_path = ""  # For storing the preffered source
         if(pmc_path != ""):
-            doc_path = pmc_path
+            pmc_path = pmc_path.split(";")[0]
+            doc_path = collection_dir+pmc_path
+            #print("for corduid = ", corduid, " path = ", doc_path)
+            this_q[corduid] = score_topic(words, doc_path, global_vocab, global_size, mu) # score calculated for this corduid
+        elif(pmc_path != ""):
+            pdf_path = pdf_path.split(";")[0]
+            doc_path = collection_dir+pdf_path
+            #print("for corduid = ", corduid, " path = ", doc_path)
+            this_q[corduid] = score_topic(words, doc_path, global_vocab, global_size, mu) # score calculated for this corduid
         else:
-            doc_path = pdf_path
+            print("for corduid = ", corduid, " we have neither documents!")
+            this_q[corduid] = 0.0
         
-        this_q[corduid] = score_topic(words, doc_path, global_vocab, global_size, mu) # score calculated for this corduid
+        
         ## Don't know if neither found
 
     ranked_docs = sorted(this_q, key=lambda k: this_q[k], reverse=True)

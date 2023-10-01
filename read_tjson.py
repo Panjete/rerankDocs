@@ -1,4 +1,5 @@
 import json
+import re
 
 def read_text_json(filename):
     with open(filename, "r") as json_file:
@@ -12,11 +13,12 @@ def read_text_json(filename):
 
     abst_text = ""
     if data.get("abstract", "null") != "null":
-        abst_text = data["abstract"][0].get("text", "unknown")
+        if len(data["abstract"])>0:
+            abst_text = data["abstract"][0].get("text", "unknown")
 
     texts = ""
     for bts in data.get("body_text", {}):
-        texts += bts.get("text", "unknown")
+        texts += re.sub(r'[^a-zA-Z0-9\s\-]', '', bts.get("text", "unknown")).lower() ##Prune
 
     return texts
 

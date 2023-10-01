@@ -25,39 +25,95 @@ metadata_file = collection_dir + "metadata.csv"
 pdf_json = collection_dir + "document_parses/pdf_json"
 pmc_json = collection_dir + "document_parses/pmc_json"
 
-
+already_learnt = True ## TODO: set to false in the start
 
 t40t100 = rt100(top_100_file) ## contains an dictionary of Qnum -> array of tuples, (CORDid, Rank, Score)
 qmapping = qfile(query_file)  ## mapping TopicNum -> (TopicNum, Query, Question, Narrative)
 file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (pdf_file, pmc_file) 
-
+x = 0
 ## Collecting symbols for w2v collection
+## This loop is able to write 40 documents, each containing text from top100 of that query
 out_ranks = {}
 qnums_sorted = sorted(qmapping.keys())
 for qnum in qnums_sorted:
     top100 = t40t100[qnum] # top 100 for this topic
-    q_query, q_question, q_narr = qmapping(qnum) # get all data of this topic
+    qqnum, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
     words = q_question ### TODO: Analyse choice
     this_q = ""
-
     for (corduid, _, _) in top100:
-        pdf_path, pmc_path = file_locs_mapping(corduid)
-        doc_path = ""  # For storing the preffered source
+        pdf_path, pmc_path = file_locs_mapping[corduid]
+        doc_path = ""  # For storing the preferred source
+        x+= 1
         if(pmc_path != ""):
-            doc_path = pmc_path
+            pmc_path = pmc_path.split(";")[0]
+            doc_path = collection_dir+pmc_path
+            #print("for corduid = ", corduid, " path = ", doc_path)
+            this_q += read_text_json(doc_path)
+        elif(pmc_path != ""):
+            pdf_path = pdf_path.split(";")[0]
+            doc_path = collection_dir+pdf_path
+            #print("for corduid = ", corduid, " path = ", doc_path)
+            this_q += read_text_json(doc_path)
         else:
-            doc_path = pdf_path
-        
-        this_q += read_text_json(doc_path)
-        ## Don't know if neither found
+            print("for corduid = ", corduid, " we have neither documents!")
+            ## Don't know if neither found
+
     out_ranks[qnum] = this_q
     with open("intm_data/"+str(qnum)+".txt", "w") as f:
         f.write(this_q)
+    print("x = ", x)
 
+
+## Learning Local embeddings
+if not already_learnt:
+    for qnum in qnums_sorted:
+        text_file_location = "intm_data/"+str(qnum)+".txt"
+        vector_file = "intm_data/vector_" + str(qnum) + ".bin"
+        #command = ["./create_local_w2vs.sh", text_file_location]
+        #command = ["time", "./word2vec", "-train", text_file_location, "-output", vector_file, "-cbow", "1", "-size", "200", "-window", "8", "-negative", "25" , "-hs", "0" , "-sample", "1e-4" "-threads", "20" , "-binary", "1", "-iter", "15"]
+        command = "time ./word2vec -train " + text_file_location + " -output " + vector_file + " -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 1 -iter 15"
+        process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #return_code = process.wait()
+
+        stdout_output = process.stdout.decode('utf-8')
+        stderr_output = process.stderr.decode('utf-8')
+
+        # Print the standard output and standard error
+        if stdout_output:
+            print("Standard Output:")
+            print(stdout_output)
+
+        if stderr_output:
+            print("Standard Error:")
+            print(stderr_output)
+
+        if process.returncode != 0:
+            print("Error creating local w2v for qnum = ", qnum)
+        else:
+            print("Created local w2v for qnum = ", qnum)
+
+
+## finding nearest words for all query terms
 for qnum in qnums_sorted:
-    text_file_location = "intm_data/"+str(qnum)+".txt"
-    vector_file = "intm/vector_" + str(qnum) + ".bin"
-    subprocess.call([])
+    vector_file = "intm_data/vector_" + str(qnum) + ".bin"
+    qqnum, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
+    words = q_question ### TODO: Analyse choice
+    for word in words:
+        command = "./distance " + vector_file + " " + word
+        process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout_output = process.stdout.decode('utf-8')
+        stderr_output = process.stderr.decode('utf-8')
+
+        # Print the standard output and standard error
+        if stdout_output:
+            print("Standard Output:")
+            print(stdout_output)
+        if stderr_output:
+            print("Standard Error:")
+            print(stderr_output)
+        if process.returncode != 0:
+            print("Error creating nearest words for word,  qnum = ", word, qnum)
 
 
 

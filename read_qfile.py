@@ -21,7 +21,7 @@ def qfile(queryfile):
     translation_table = str.maketrans("", "", "(),?.:" )
     # prunes full sentences
     def prune(istr):
-        #istr = istr.lower()
+        istr = istr.lower() ## Comment this out if don't want to lowecase queries terms
         istr = istr.split()
         outistr = []
         for issstr in istr:

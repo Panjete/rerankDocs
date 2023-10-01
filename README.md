@@ -3,7 +3,7 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
 
 Considering COVID-19 to be one word currently
 Is it guarenteed we'll have only 40 topics?
-I am NOT lowercasing queries
+I am NOT lowercasing queries -- actually, should I?
 
 Assuming that all queries have a number, and non-empty fields in query, question, and narrrative
 
@@ -14,6 +14,12 @@ Use os library to join directories instead
 Guarentees on json documents?
 Add matadata to json reads. Include Bibrefs?
 
-What happens when there is neither pdf and pmc
+What happens when there is neither pdf and pmc - happens for 8l411r1w
 
 Updated word2vec implementations by changing malloc.h ->stdlib.h
+
+When multiple documents available, I just choose the first
+
+remove \use{amspackage} latex tags
+
+Issue with CSV reader
