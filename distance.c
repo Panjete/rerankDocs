@@ -7,11 +7,12 @@ const long long max_size = 2000;         // max length of strings
 const long long N = 40;                  // number of closest words that will be shown
 const long long max_w = 50;              // max length of vocabulary entries
 
-// run by ./distance intm/vector_qnum.bin word
+// run by ./distance intm/vector_qnum.bin intm/nw_qnum.txt word
 // appends top N words to file intm/nw_qnum.txt
 int main(int argc, char **argv) {
   FILE *f;
   char st1[max_size];
+  char outfile[max_size];
   char *bestw[N];
   char file_name[max_size], st[100][max_size];
   float dist, len, bestd[N], vec[max_size];
@@ -19,8 +20,8 @@ int main(int argc, char **argv) {
   char ch;
   float *M;
   char *vocab;
-  if (argc < 2) {
-    printf("Usage: ./distance <FILE>\nwhere FILE contains word projections in the BINARY FORMAT\n");
+  if (argc < 3) {
+    printf("Usage: ./distance <FILE> <word>\nwhere FILE contains word projections in the BINARY FORMAT\n");
     return 0;
   }
   strcpy(file_name, argv[1]);
@@ -56,9 +57,15 @@ int main(int argc, char **argv) {
   //while (1) {
     for (a = 0; a < N; a++) bestd[a] = 0;
     for (a = 0; a < N; a++) bestw[a][0] = 0;
-    printf("Enter word or sentence (EXIT to break): ");
+    //printf("Enter word or sentence (EXIT to break): ");
     a = 0;
-    strcpy(st1, argv[2]);
+    strcpy(st1, argv[3]);
+    strcpy(outfile, argv[2]);
+
+    //size_t lengthi = strlen(st1);
+    //st1[lengthi] = '0';
+    //st1[lengthi + 1] = '\0';
+
     //   while (1) {
     //   st1[a] = fgetc(stdin);
     //   if ((st1[a] == '\n') || (a >= max_size - 1)) {
@@ -94,54 +101,71 @@ int main(int argc, char **argv) {
         break;
       }
     }
-    //if (b == -1) continue;
-    printf("\n                                              Word       Cosine distance\n------------------------------------------------------------------------\n");
-    for (a = 0; a < size; a++) vec[a] = 0;
-    for (b = 0; b < cn; b++) {
-      if (bi[b] == -1) continue;
-      for (a = 0; a < size; a++) vec[a] += M[a + bi[b] * size];
-    }
-    len = 0;
-    for (a = 0; a < size; a++) len += vec[a] * vec[a];
-    len = sqrt(len);
-    for (a = 0; a < size; a++) vec[a] /= len;
-    for (a = 0; a < N; a++) bestd[a] = -1;
-    for (a = 0; a < N; a++) bestw[a][0] = 0;
-    for (c = 0; c < words; c++) {
-      a = 0;
-      for (b = 0; b < cn; b++) if (bi[b] == c) a = 1;
-      if (a == 1) continue;
-      dist = 0;
-      for (a = 0; a < size; a++) dist += vec[a] * M[a + c * size];
-      for (a = 0; a < N; a++) {
-        if (dist > bestd[a]) {
-          for (d = N - 1; d > a; d--) {
-            bestd[d] = bestd[d - 1];
-            strcpy(bestw[d], bestw[d - 1]);
+    if (b >= 0){
+      printf("\n                                              Word       Cosine distance\n------------------------------------------------------------------------\n");
+      for (a = 0; a < size; a++) vec[a] = 0;
+      for (b = 0; b < cn; b++) {
+        if (bi[b] == -1) continue;
+        for (a = 0; a < size; a++) vec[a] += M[a + bi[b] * size];
+      }
+      //printf("here1\n");
+      len = 0;
+      for (a = 0; a < size; a++) len += vec[a] * vec[a];
+      len = sqrt(len);
+      for (a = 0; a < size; a++) vec[a] /= len;
+      for (a = 0; a < N; a++) bestd[a] = -1;
+      for (a = 0; a < N; a++) bestw[a][0] = 0;
+      //printf("here2\n");
+      for (c = 0; c < words; c++) {
+        a = 0;
+        for (b = 0; b < cn; b++) if (bi[b] == c) a = 1;
+        if (a == 1) continue;
+        dist = 0;
+        for (a = 0; a < size; a++) dist += vec[a] * M[a + c * size];
+        for (a = 0; a < N; a++) {
+          if (dist > bestd[a]) {
+            for (d = N - 1; d > a; d--) {
+              bestd[d] = bestd[d - 1];
+              strcpy(bestw[d], bestw[d - 1]);
+            }
+            bestd[a] = dist;
+            strcpy(bestw[a], &vocab[c * max_w]);
+            break;
           }
-          bestd[a] = dist;
-          strcpy(bestw[a], &vocab[c * max_w]);
-          break;
         }
       }
-    }
+      //printf("here3\n");
+      // const char *underscore = strchr(file_name, '_');
+      // const char *dot = strchr(underscore, '.');
+      // size_t length = dot - (underscore + 1);
+      // char extracted_string[length+1];
+      // extracted_string[length] = '\0';
+      // strncpy(extracted_string, underscore + 1, length);
+      // char final_string[length + 8]; // "+3 for nw_, +4 for .txt"
+      // snprintf(final_string, sizeof(final_string), "nw_%s.txt", extracted_string);
+      // final_string[length+7] = '\0';
+      // printf("here\n");
+      // printf("%s\n", extracted_string);
 
-    const char *underscore = strchr(file_name, '_');
-    const char *dot = strchr(underscore, '.');
-    size_t length = dot - (underscore + 1);
-    char extracted_string[length+1];
-    extracted_string[length] = '\0';
-    strncpy(extracted_string, underscore + 1, length);
-    char final_string[length + 8]; // "+3 for nw_, +4 for .txt"
-    snprintf(final_string, sizeof(final_string), "nw_%s.txt", extracted_string);
-    final_string[length+7] = '\0';
+      FILE *file;
+      file = fopen(outfile, "a");
 
-    FILE *file;
-    file = fopen(final_string, "a");
-    for (a = 0; a < N; a++){
-      fprintf(file, "%50s\t\t%f\n", bestw[a], bestd[a]);
-    }
-    fclose(file);
+       if (file == NULL) {
+        perror("Error opening file");
+        return 1; // Exit with an error code
+        }
+
+      printf("here5\n");
+      for (a = 0; a < N; a++){
+        //printf("here6\n");
+        fprintf(file, "%50s\t\t%f\n", bestw[a], bestd[a]);
+        //char xx[]= "%50s\t\t%f\n", bestw[a], bestd[a];
+        //fprintf(xx, file);
+        //printf("here7\n");
+      }
+      fclose(file);
+      printf("here8\n");
   //}
+  }
   return 0;
 }

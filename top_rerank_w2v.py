@@ -97,10 +97,14 @@ if not already_learnt:
 ## finding nearest words for all query terms
 for qnum in qnums_sorted:
     vector_file = "intm_data/vector_" + str(qnum) + ".bin"
+    dest_file = "intm_data/nw_" + str(qnum) + ".txt"
     qqnum, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
     words = q_question ### TODO: Analyse choice
+
     for word in words:
-        command = "./distance " + vector_file + " " + word
+        with open(dest_file, "a") as f:
+            f.write("word = " + word + "    ")
+        command = "./distance " + vector_file + " " + dest_file + " " + word
         process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout_output = process.stdout.decode('utf-8')
         stderr_output = process.stderr.decode('utf-8')
