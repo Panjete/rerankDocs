@@ -13,7 +13,8 @@ if [ ! -f "$input_filename" ]; then
     exit 1
 fi
 
-filename_without_extension=$(basename "$input_filename" .txt)
-output_filename= "vector_${filename_without_extension}.bin"
 
-time ./word2vec -train input_filename -output output_filename -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 1 -iter 15
+
+output_filename="vector_${input_filename%.*}.bin"
+
+time ./word2vec -train $input_filename -output $output_filename -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 1 -iter 15
