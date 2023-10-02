@@ -4,8 +4,11 @@
 ## calls ./distance vector_qnum.bin word
 ## Appends nearest words to nw_qnum.txt
 
-input_filename="$1"
-word="$2"
+## Currently unused
 
-./distance $input_filename $word
+input_filename="$1"
+output_filename="$2"
+word="$3"
+
+./distance $input_filename $output_filename $word
 

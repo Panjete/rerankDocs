@@ -2,6 +2,7 @@
 
 ## Learns from a qnum.txt file, and writes it to vector_qnum.bin
 ## Use to learn the top 100 docs for each query
+## Currently unused
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <filename>"
     exit 1
