@@ -41,6 +41,7 @@ file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (pdf_file, pm
 global_vocab, global_size = get_collection_stats(pdf_json) ## Include Both dirs
 mu = 50 ## Hyper-Parameter
 
+## this loop saves the re-ranked results in a qnum -> ranks map (out_ranks)
 out_ranks = {}
 qnums_sorted = sorted(qmapping.keys())
 for qnum in qnums_sorted:
@@ -48,7 +49,7 @@ for qnum in qnums_sorted:
     q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
     words = q_question ### TODO: Analyse choice
     this_q = {} 
-
+    ## Compute the score for each of the top 100 docs
     for (corduid, _, _) in top100:
         pdf_path, pmc_path = file_locs_mapping[corduid]
         doc_path = ""  # For storing the preffered source
@@ -68,7 +69,8 @@ for qnum in qnums_sorted:
         
         
         ## Don't know if neither found
-
+        
+    ## After scores computed, re-rank
     ranked_docs = sorted(this_q, key=lambda k: this_q[k], reverse=True)
     rkds = []
     for key in ranked_docs:

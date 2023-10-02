@@ -23,3 +23,22 @@ When multiple documents available, I just choose the first
 remove \use{amspackage} latex tags
 
 Issue with CSV reader
+
+### FILE STRUCTURE 
+
+#### To call the RM1 model - 
+
+1. Call `lm_rerank.sh` with the apt arguments. The arguments expected by this file (in order) are called as `bash lm_rerank.sh [query-file] [top-100-file] [collection-dir] [output-file] [expansions-file]`
+
+2. The script calls `top_rerank_rm1.py`, and passes the same arguments as above to it. This file is the flow-control of the entire task.
+
+3. `top_rerank_rm1.py` calls a series of healper files for reading some of the data. These are :- 
+    * `read_csv.py` :- Houses functionality to read the `metadata.csv` in the `[collection-dir]`
+    * `read_qfile.py` :- Houses functionality to read and parse the `[query-file]`
+    * `read_top100.py` :- Houses functionality to read and parse the `[top-100-file]`
+    * `read_tjson.py` :- To read and parse a json file (pmc\_json/pdf\_json)
+
+4. `rm1.py` is where the algorithmic implementations of the *RM1* model are housed. These include computing the per-document LM, the global-collection LM, and functionality for calculating the _query-document_ score. This score can now be used to re-rank the documents for a given query.
+
+5. `top_rerank.py` iterates over the queries. For each query, it computes a score for the top100 documents that have been retrieved . Arranging these is a descending order, these results are written to the `[output-file]`.
+  
