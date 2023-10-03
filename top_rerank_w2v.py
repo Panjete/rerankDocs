@@ -29,7 +29,7 @@ already_learnt = True ## TODO: set to false in the start
 
 t40t100 = rt100(top_100_file) ## contains an dictionary of Qnum -> array of tuples, (CORDid, Rank, Score)
 qmapping = qfile(query_file)  ## mapping TopicNum -> (TopicNum, Query, Question, Narrative)
-file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (pdf_file, pmc_file) 
+file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (0, pmc_file) | (1, pdf_file) | (2, text) | (3, "") 
 x = 0
 ## Collecting symbols for w2v collection
 ## This loop is able to write 40 documents, each containing text from top100 of that query
@@ -41,22 +41,14 @@ for qnum in qnums_sorted:
     words = q_question ### TODO: Analyse choice
     this_q = ""
     for (corduid, _, _) in top100:
-        pdf_path, pmc_path = file_locs_mapping[corduid]
+        data_type, data_entry = file_locs_mapping[corduid]
         doc_path = ""  # For storing the preferred source
         x+= 1
-        if(pmc_path != ""):
-            pmc_path = pmc_path.split(";")[0]
-            doc_path = collection_dir+pmc_path
-            #print("for corduid = ", corduid, " path = ", doc_path)
-            this_q += read_text_json(doc_path)
-        elif(pmc_path != ""):
-            pdf_path = pdf_path.split(";")[0]
-            doc_path = collection_dir+pdf_path
-            #print("for corduid = ", corduid, " path = ", doc_path)
-            this_q += read_text_json(doc_path)
-        else:
-            print("for corduid = ", corduid, " we have neither documents!")
-            ## Don't know if neither found
+        if(data_type <2): ## Happens when pmc or pdf available, prefers pmc
+            doc_path = collection_dir + data_entry
+            this_q += read_text_json(doc_path) + " "
+        else: ## Happens when only metadata available
+            this_q += data_entry + " "
 
     out_ranks[qnum] = this_q
     with open("intm_data/"+str(qnum)+".txt", "w") as f:

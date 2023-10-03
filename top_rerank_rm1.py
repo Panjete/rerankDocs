@@ -3,7 +3,7 @@ from read_top100 import rt100
 from read_qfile import qfile
 from read_csv import rcsv
 import os
-from rm1 import get_collection_stats, get_document_stats, score_topic
+from rm1 import get_collection_stats, score_topic, score_text
 
 aparser = argparse.ArgumentParser(description="Process filenames")
 aparser.add_argument("query_file", nargs=1)
@@ -38,7 +38,7 @@ file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (pdf_file, pm
 
 
 
-global_vocab, global_size = get_collection_stats(pdf_json) ## Include Both dirs
+global_vocab, global_size = get_collection_stats(pdf_json, pmc_json) ## Include Both dirs
 mu = 50 ## Hyper-Parameter
 
 ## this loop saves the re-ranked results in a qnum -> ranks map (out_ranks)
@@ -51,24 +51,15 @@ for qnum in qnums_sorted:
     this_q = {} 
     ## Compute the score for each of the top 100 docs
     for (corduid, _, _) in top100:
-        pdf_path, pmc_path = file_locs_mapping[corduid]
-        doc_path = ""  # For storing the preffered source
-        if(pmc_path != ""):
-            pmc_path = pmc_path.split(";")[0]
-            doc_path = collection_dir+pmc_path
-            #print("for corduid = ", corduid, " path = ", doc_path)
-            this_q[corduid] = score_topic(words, doc_path, global_vocab, global_size, mu) # score calculated for this corduid
-        elif(pmc_path != ""):
-            pdf_path = pdf_path.split(";")[0]
-            doc_path = collection_dir+pdf_path
-            #print("for corduid = ", corduid, " path = ", doc_path)
+
+        data_type, data_entry = file_locs_mapping[corduid]
+        doc_path = ""  # For storing the preferred source
+
+        if(data_type<2): ## Happens when pmc or pdf available, prefers pmc
+            doc_path = collection_dir+ data_entry
             this_q[corduid] = score_topic(words, doc_path, global_vocab, global_size, mu) # score calculated for this corduid
         else:
-            print("for corduid = ", corduid, " we have neither documents!")
-            this_q[corduid] = 0.0
-        
-        
-        ## Don't know if neither found
+            this_q[corduid] = score_text(words, data_entry, global_vocab, global_size, mu) # score calculated for this corduid
         
     ## After scores computed, re-rank
     ranked_docs = sorted(this_q, key=lambda k: this_q[k], reverse=True)
@@ -84,28 +75,4 @@ with open(output_file, 'w') as f:
         for (corduid, val) in out_ranks[qnum]:
             f.write(str(qnum) + " Q0 " + corduid + " " + str(i) + " " + val + " " + "runid1")
             i += 1
-
-
-
-
-        
-    
-
-        
-
-
-
-#print(len(file_locs_mapping.keys()))
-
-
-
-
-
-
-
-
-
-
-
-
 

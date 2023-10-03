@@ -1,28 +1,32 @@
 # rerankDocs
 Psuedo Relevance Feedback using Query Expansion and Reranking
 
-Considering COVID-19 to be one word currently
-Is it guarenteed we'll have only 40 topics?
-I am NOT lowercasing queries -- actually, should I?
+## To Handle :- 
 
-Assuming that all queries have a number, and non-empty fields in query, question, and narrrative
+1. Considering COVID-19 to be one word currently
+2. Is it guarenteed we'll have only 40 topics?
+3. I am lowercasing queries, text and  -- actually, should I?
 
-metedata.csv sould have 192510 but has 191175 entries?
+4. Assuming that all queries have a number, and non-empty fields in query, question, and narrrative
 
-Use os library to join directories instead
+5. metedata.csv sould have 192510 but has 191175 entries - Duplicates, resolved
 
-Guarentees on json documents?
-Add matadata to json reads. Include Bibrefs?
+6. Use os library to join directories instead
 
-What happens when there is neither pdf and pmc - happens for 8l411r1w
+7. Guarentees on json documents?
+8. Add matadata to json reads. Include Bibrefs?
 
-Updated word2vec implementations by changing malloc.h ->stdlib.h
+9. What happens when there is neither pdf and pmc - happens for 8l411r1w -- Handled, read from .csv
 
-When multiple documents available, I just choose the first
+10. Updated word2vec implementations by changing malloc.h ->stdlib.h -- make patch file
 
-remove \use{amspackage} latex tags
+11. When multiple documents available, I just choose the first
 
-Issue with CSV reader
+12. remove \use{amspackage} latex tags
+
+13. Issue with CSV reader --updated
+
+14. PMC documents don't have abstract in them
 
 ### FILE STRUCTURE 
 
@@ -58,6 +62,3 @@ Issue with CSV reader
     * `time ./word2vec -train  <text_file_location> -output <vector_file> -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 1 -iter 15` - stores vector embeddings in the [vector\_file]
 
     * `./distance <vector_file> <dest_file> <word>` - computes the top 40 nearest words for [word] and appends them to [dest\_file]
-
-
-5. `top_rerank.py` iterates over the queries. For each query, it computes a score for the top100 documents that have been retrieved . Arranging these is a descending order, these results are written to the `[output-file]`.

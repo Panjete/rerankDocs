@@ -16,25 +16,48 @@ def get_document_stats(filename):
     return freq, len(words)
 
 ## Get background stats and size
-def get_collection_stats(dirname):
+def get_collection_stats(dirname1, dirname2):
     glob_freq = {}
     vocab_size = 0
-    for file_only_name in os.listdir(dirname):
-        filename = os.path.join(dirname, file_only_name)
-        loc_freq, loc_siz = get_document_stats(filename)
-        vocab_size += loc_siz
+    dirs = [dirname1, dirname2]
+    for dirname in dirs:
+        for file_only_name in os.listdir(dirname):
+            filename = os.path.join(dirname, file_only_name)
+            loc_freq, loc_siz = get_document_stats(filename)
+            vocab_size += loc_siz
+            for key in loc_freq.keys():
+                if key in glob_freq:
+                    glob_freq[key] += loc_freq[key]
+                else:
+                    glob_freq[key] = loc_freq[key]
 
-        for key in loc_freq.keys():
-            if key in glob_freq:
-                glob_freq[key] += loc_freq[key]
-            else:
-                glob_freq[key] = loc_freq[key]
-            
     return glob_freq, vocab_size
+
+## Pass in the text, get freq mapping and size
+def get_text_stats(text):
+    words = text.split()
+    freq = {}
+    for word in words:
+        word = word.lower()
+        if word in freq:
+            freq[word] += 1
+        else:
+            freq[word] = 1
+    return freq, len(words)
 
 ## Calculate score given words, doc path, global vocab and mu (hyper-parameter)
 def score_topic(words, doc, global_vocab, gvs,  mu):
     local_freq, local_siz = get_document_stats(doc)
+    score = 0.0
+    for word in words:
+        numerator = local_freq[word] + mu * (global_vocab[word]/gvs)
+        denominator = local_siz + mu
+        score += (log2(numerator/denominator))
+    return score
+
+## Calculate score given words, text, global vocab and mu (hyper-parameter)
+def score_text(words, text, global_vocab, gvs,  mu):
+    local_freq, local_siz = get_text_stats(text)
     score = 0.0
     for word in words:
         numerator = local_freq[word] + mu * (global_vocab[word]/gvs)
