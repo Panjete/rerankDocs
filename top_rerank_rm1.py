@@ -3,7 +3,7 @@ from read_top100 import rt100
 from read_qfile import qfile
 from read_csv import rcsv
 import os
-from rm1 import get_collection_stats, score_topic, score_text
+from rm1 import get_collection_stats, score_topic, score_text, generate_background
 
 aparser = argparse.ArgumentParser(description="Process filenames")
 aparser.add_argument("query_file", nargs=1)
@@ -38,7 +38,7 @@ file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (pdf_file, pm
 
 
 
-global_vocab, global_size = get_collection_stats(pdf_json, pmc_json) ## Include Both dirs
+
 mu = 50 ## Hyper-Parameter
 
 ## this loop saves the re-ranked results in a qnum -> ranks map (out_ranks)
@@ -49,6 +49,21 @@ for qnum in qnums_sorted:
     q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
     words = q_question ### TODO: Analyse choice
     this_q = {} 
+
+    ## Instead of completely global, choosing background to be the top 100 instead
+    text_from_non_link_files = ""
+    links_of_link_avb_files = []
+    for (corduid, _, _) in top100:
+        data_type, data_entry = file_locs_mapping[corduid]
+        doc_path = ""  # For storing the preferred source
+
+        if(data_type<2): ## Happens when pmc or pdf available, prefers pmc
+            doc_path = collection_dir+ data_entry
+            links_of_link_avb_files.append(doc_path)
+        else:
+            text_from_non_link_files += data_entry + " "
+
+    global_vocab, global_size = generate_background(links_of_link_avb_files, text_from_non_link_files) ## Include Both dirs
     ## Compute the score for each of the top 100 docs
     for (corduid, _, _) in top100:
 
