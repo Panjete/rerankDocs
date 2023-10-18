@@ -54,27 +54,12 @@ int main(int argc, char **argv) {
     for (a = 0; a < size; a++) M[a + b * size] /= len;
   }
   fclose(f);
-  //while (1) {
     for (a = 0; a < N; a++) bestd[a] = 0;
     for (a = 0; a < N; a++) bestw[a][0] = 0;
-    //printf("Enter word or sentence (EXIT to break): ");
     a = 0;
     strcpy(st1, argv[3]);
     strcpy(outfile, argv[2]);
 
-    //size_t lengthi = strlen(st1);
-    //st1[lengthi] = '0';
-    //st1[lengthi + 1] = '\0';
-
-    //   while (1) {
-    //   st1[a] = fgetc(stdin);
-    //   if ((st1[a] == '\n') || (a >= max_size - 1)) {
-    //     st1[a] = 0;
-    //     break;
-    //   }
-    //   a++;
-    // }
-    //if (!strcmp(st1, "EXIT")) break;
     cn = 0;
     b = 0;
     c = 0;
@@ -108,14 +93,12 @@ int main(int argc, char **argv) {
         if (bi[b] == -1) continue;
         for (a = 0; a < size; a++) vec[a] += M[a + bi[b] * size];
       }
-      //printf("here1\n");
       len = 0;
       for (a = 0; a < size; a++) len += vec[a] * vec[a];
       len = sqrt(len);
       for (a = 0; a < size; a++) vec[a] /= len;
       for (a = 0; a < N; a++) bestd[a] = -1;
       for (a = 0; a < N; a++) bestw[a][0] = 0;
-      //printf("here2\n");
       for (c = 0; c < words; c++) {
         a = 0;
         for (b = 0; b < cn; b++) if (bi[b] == c) a = 1;
@@ -134,18 +117,6 @@ int main(int argc, char **argv) {
           }
         }
       }
-      //printf("here3\n");
-      // const char *underscore = strchr(file_name, '_');
-      // const char *dot = strchr(underscore, '.');
-      // size_t length = dot - (underscore + 1);
-      // char extracted_string[length+1];
-      // extracted_string[length] = '\0';
-      // strncpy(extracted_string, underscore + 1, length);
-      // char final_string[length + 8]; // "+3 for nw_, +4 for .txt"
-      // snprintf(final_string, sizeof(final_string), "nw_%s.txt", extracted_string);
-      // final_string[length+7] = '\0';
-      // printf("here\n");
-      // printf("%s\n", extracted_string);
 
       FILE *file;
       file = fopen(outfile, "a");
@@ -155,17 +126,10 @@ int main(int argc, char **argv) {
         return 1; // Exit with an error code
         }
 
-      printf("here5\n");
       for (a = 0; a < N; a++){
-        //printf("here6\n");
         fprintf(file, "%50s\t\t%f\n", bestw[a], bestd[a]);
-        //char xx[]= "%50s\t\t%f\n", bestw[a], bestd[a];
-        //fprintf(xx, file);
-        //printf("here7\n");
       }
       fclose(file);
-      printf("here8\n");
-  //}
   }
   return 0;
 }

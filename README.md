@@ -28,6 +28,8 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
 
 14. PMC documents don't have abstract in them
 
+15. What happens when word given to find closest meaning of, doesn't exist?
+
 ### FILE STRUCTURE 
 
 #### To call the RM1 model - 

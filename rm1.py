@@ -1,6 +1,6 @@
 from read_tjson import read_text_json
 import os
-from math import log2
+from math import log2, isclose
 
 #### jehde relevance model R ne query nu generate kareya, ohde hisaab naal documents nu score de do
 #### Our best bet of R is the sampling q1q2q3...qk we have
@@ -67,9 +67,9 @@ def generate_background(list_paths, text):
     vocab_size += text_s
     for key in text_f.keys():
         if key in glob_freq:
-            glob_freq[key] += loc_freq[key]
+            glob_freq[key] += text_f[key]
         else:
-            glob_freq[key] = loc_freq[key]
+            glob_freq[key] = text_f[key]
 
     return glob_freq, vocab_size
 
@@ -78,9 +78,10 @@ def score_topic(words, doc, global_vocab, gvs,  mu):
     local_freq, local_siz = get_document_stats(doc)
     score = 0.0
     for word in words:
-        numerator = local_freq[word] + mu * (global_vocab[word]/gvs)
+        numerator = local_freq.get(word, 0) + mu * (global_vocab.get(word, 0)/gvs)
         denominator = local_siz + mu
-        score += (log2(numerator/denominator))
+        if not isclose(numerator, 0):
+            score += (log2(numerator/denominator))
     return score
 
 ## Calculate score given words, text, global vocab and mu (hyper-parameter)
@@ -88,9 +89,12 @@ def score_text(words, text, global_vocab, gvs,  mu):
     local_freq, local_siz = get_text_stats(text)
     score = 0.0
     for word in words:
-        numerator = local_freq[word] + mu * (global_vocab[word]/gvs)
+        numerator = local_freq.get(word, 0) + mu * (global_vocab.get(word, 0)/gvs)
         denominator = local_siz + mu
-        score += (log2(numerator/denominator))
+        print(word, "num = ", numerator, "den =", denominator)
+        if not isclose(numerator, 0):
+            score += (log2(numerator/denominator))
+        #score += (log2(numerator/denominator))
     return score
 
 

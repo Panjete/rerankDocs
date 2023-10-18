@@ -46,7 +46,7 @@ out_ranks = {}
 qnums_sorted = sorted(qmapping.keys())
 for qnum in qnums_sorted:
     top100 = t40t100[qnum] # top 100 for this topic
-    q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
+    topic_num, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
     words = q_question ### TODO: Analyse choice
     this_q = {} 
 
@@ -88,6 +88,6 @@ with open(output_file, 'w') as f:
     for qnum in qnums_sorted:
         i = 0
         for (corduid, val) in out_ranks[qnum]:
-            f.write(str(qnum) + " Q0 " + corduid + " " + str(i) + " " + val + " " + "runid1")
+            f.write(str(qnum) + " Q0 " + corduid + " " + str(i) + " " + val + " " + "runid1\n")
             i += 1
 

@@ -33,6 +33,7 @@ file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (0, pmc_file)
 x = 0
 ## Collecting symbols for w2v collection
 ## This loop is able to write 40 documents, each containing text from top100 of that query
+## These 40 interim documents will be used to train w2v binary file, later
 out_ranks = {}
 qnums_sorted = sorted(qmapping.keys())
 for qnum in qnums_sorted:
@@ -61,12 +62,8 @@ if not already_learnt:
     for qnum in qnums_sorted:
         text_file_location = "intm_data/"+str(qnum)+".txt"
         vector_file = "intm_data/vector_" + str(qnum) + ".bin"
-        #command = ["./create_local_w2vs.sh", text_file_location]
-        #command = ["time", "./word2vec", "-train", text_file_location, "-output", vector_file, "-cbow", "1", "-size", "200", "-window", "8", "-negative", "25" , "-hs", "0" , "-sample", "1e-4" "-threads", "20" , "-binary", "1", "-iter", "15"]
         command = "time ./word2vec -train " + text_file_location + " -output " + vector_file + " -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 1 -iter 15"
         process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #return_code = process.wait()
 
         stdout_output = process.stdout.decode('utf-8')
         stderr_output = process.stderr.decode('utf-8')
