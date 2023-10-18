@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd trunk
 make
 cd ..
