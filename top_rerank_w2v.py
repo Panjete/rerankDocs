@@ -39,7 +39,7 @@ qnums_sorted = sorted(qmapping.keys())
 for qnum in qnums_sorted:
     top100 = t40t100[qnum] # top 100 for this topic
     qqnum, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
-    words = q_question ### TODO: Analyse choice
+    words = q_query ### TODO: Analyse choice
     this_q = ""
     for (corduid, _, _) in top100:
         data_type, data_entry = file_locs_mapping[corduid]
@@ -88,7 +88,7 @@ for qnum in qnums_sorted:
     vector_file = "intm_data/vector_" + str(qnum) + ".bin"
     dest_file = "intm_data/nw_" + str(qnum) + ".txt"
     qqnum, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
-    words = q_question ### TODO: Analyse choice
+    words = q_query ### TODO: Analyse choice
 
     for word in words:
         with open(dest_file, "a") as f:
