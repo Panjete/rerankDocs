@@ -45,6 +45,12 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
 - Baseline Task 1 scores, mu = 100, query :  0.1389, 0.6126, 0.5715, 0.4908
 - Baseline Task 1 scores, mu = 50, query :  0.1389, 0.6181, 0.5734, 0.4921
 
+
+* rm1, q_query, mu = 100 : 0.1421, 0.6249, 0.6094, 0.5159
+
+* w2v, q_question, mu = 100 : 0.1284, 0.4375, 0.4228, 0.3955
+* w2v, q_query, mu = 100 : 0.1284, 0.4375, 0.4228, 0.3955
+
 ### FILE STRUCTURE 
 
 #### To call the RM1 model - 
