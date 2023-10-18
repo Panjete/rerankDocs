@@ -91,7 +91,7 @@ def score_text(words, text, global_vocab, gvs,  mu):
     for word in words:
         numerator = local_freq.get(word, 0) + mu * (global_vocab.get(word, 0)/gvs)
         denominator = local_siz + mu
-        print(word, "num = ", numerator, "den =", denominator)
+        #print(word, "num = ", numerator, "den =", denominator)
         if not isclose(numerator, 0):
             score += (log2(numerator/denominator))
         #score += (log2(numerator/denominator))

@@ -30,6 +30,21 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
 
 15. What happens when word given to find closest meaning of, doesn't exist?
 
+- Baseline Task 1 scores, mu = 200, questions :  0.1393, 0.5870, 0.5641, 0.4896
+- Baseline Task 1 scores, mu = 100, questions :  0.1391, 0.5961, 0.5617, 0.4866
+- Baseline Task 1 scores, mu = 50, questions :  0.1384, 0.5892, 0.5503, 0.4832
+- Baseline Task 1 scores, mu = 20, questions :  0.1377, 0.5858, 0.5337, 0.4781
+- Baseline Task 1 scores, mu = 10, questions :  0.1370, 0.5621, 0.5308, 0.4732
+- Baseline Task 1 scores, mu =  1, questions :  0.1357, 0.5590, 0.5155, 0.4641
+
+- Baseline Task 1 scores, mu = 50, narratives :  0.1384, 0.5892, 0.5503, 0.4832
+- Baseline Task 1 scores, mu = 20, narratives :  0.1377, 0.5858, 0.5337, 0.4781
+
+- Baseline Task 1 scores, mu = 1000, query :  0.1379, 0.6042, 0.5665, 0.4883
+- Baseline Task 1 scores, mu = 200, query :  0.1380, 0.5986, 0.5609, 0.4889
+- Baseline Task 1 scores, mu = 100, query :  0.1389, 0.6126, 0.5715, 0.4908
+- Baseline Task 1 scores, mu = 50, query :  0.1389, 0.6181, 0.5734, 0.4921
+
 ### FILE STRUCTURE 
 
 #### To call the RM1 model - 
@@ -47,6 +62,8 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
 4. `rm1.py` is where the algorithmic implementations of the *RM1* model are housed. These include computing the per-document LM, the global-collection LM, and functionality for calculating the _query-document_ score. This score can now be used to re-rank the documents for a given query.
 
 5. `top_rerank.py` iterates over the queries. For each query, it computes a score for the top100 documents that have been retrieved . Arranging these is a descending order, these results are written to the `[output-file]`.
+
+6. Call `./getndcg.sh` to get nDCG and nDCG@{5,10,50} scores.
   
 #### To call the Query Exmapnsion model - 
 
@@ -64,3 +81,5 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
     * `time ./word2vec -train  <text_file_location> -output <vector_file> -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 1 -iter 15` - stores vector embeddings in the [vector\_file]
 
     * `./distance <vector_file> <dest_file> <word>` - computes the top 40 nearest words for [word] and appends them to [dest\_file]
+
+5. Call `./getndcg.sh` to get nDCG and nDCG@{5,10,50} scores.

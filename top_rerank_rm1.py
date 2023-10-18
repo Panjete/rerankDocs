@@ -39,7 +39,7 @@ file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (pdf_file, pm
 
 
 
-mu = 50 ## Hyper-Parameter
+mu = 200 ## Hyper-Parameter
 
 ## this loop saves the re-ranked results in a qnum -> ranks map (out_ranks)
 out_ranks = {}
