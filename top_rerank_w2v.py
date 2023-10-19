@@ -7,6 +7,8 @@ import subprocess
 from math import log
 from rm1 import get_collection_stats, score_topic, score_text,\
       generate_background, get_text_stats, get_document_stats, score_word
+import numpy as np
+
 
 aparser = argparse.ArgumentParser(description="Process filenames")
 aparser.add_argument("query_file", nargs=1)
@@ -62,7 +64,7 @@ if not already_learnt:
     for qnum in qnums_sorted:
         text_file_location = "intm_data/"+str(qnum)+".txt"
         vector_file = "intm_data/vector_" + str(qnum) + ".bin"
-        command = "time ./word2vec -train " + text_file_location + " -output " + vector_file + " -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 1 -iter 15"
+        command = "time ./word2vec -train " + text_file_location + " -output " + vector_file + " -cbow 1 -size 200 -window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -binary 0 -iter 15"
         process = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         stdout_output = process.stdout.decode('utf-8')
@@ -82,7 +84,70 @@ if not already_learnt:
         else:
             print("Created local w2v for qnum = ", qnum)
 
+## Now finding query expansion terms per query
+expanded_words = {}
+extra_terms = ["of", "the", "is", "a", "an", "to"]
+for qnum in qnums_sorted:
+    vector_file = "intm_data/vector_" + str(qnum) + ".bin"
+    dest_file = "intm_data/nw_" + str(qnum) + ".txt"
+    qqnum, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
+    words = q_query ### TODO: Analyse choice
+    words_string = " ".join(words)
+    # command = "python " + vector_file + " " + dest_file + " " + words_string
+    # process = subprocess.run(command, shell=True)
+    # process.wait()
+    # #stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    # stdout_output = process.stdout.decode('utf-8')
+    # stderr_output = process.stderr.decode('utf-8')
+    with open(vector_file, 'r') as f:
+        lines = f.readlines()
 
+
+    map_index_word = {} ## stores words -> index mapping
+    map_word_index = {} ## stores index -> words mapping
+    u = []
+    for i, line in enumerate(lines[1:]):
+        vals = line.split()
+        row = [float(vals[i]) for i in range(1, len(vals))]
+        word = vals[0]
+        map_index_word[word] = i
+        map_word_index[i] = word
+        u.append(row)
+
+    U = np.array(u)
+    U_mul_Ut = np.dot(U, U.transpose())
+
+    v = U.shape[0]
+    one_indices = [] ## to store those indices of terms which occur in the dictionary
+    for word in words:
+        if word in map_index_word.keys():
+            one_indices.append(map_index_word[word])
+
+    a = np.array(one_indices)
+    query_vector = np.zeros((v,1), dtype=int)
+    query_vector[a] = 1
+    distance_scores = np.dot(U_mul_Ut, query_vector)
+
+
+    ## multiply U * Ut * q
+    sorted_indices = np.argsort(distance_scores.flatten())
+    top_k_indices = sorted_indices[:20]
+    top_k_words = [map_word_index[i] for i in top_k_indices]
+    with open(dest_file, 'w') as f:
+        for word in top_k_words:
+            f.write(word +' ')
+    print("Expansion words found for qnum =", qnum)
+
+
+for qnum in qnums_sorted:
+    nw_file = "intm_data/nw_" + str(qnum) + ".txt"
+    expanded_words[qnum] = [] 
+    with open(nw_file, "r") as f:
+        nw_lines= f.read().split()
+        for line in nw_lines:
+            if line not in extra_terms:
+                expanded_words[qnum].append(line)
+'''
 ## finding nearest words for all query terms
 for qnum in qnums_sorted:
     vector_file = "intm_data/vector_" + str(qnum) + ".bin"
@@ -121,6 +186,7 @@ for qnum in qnums_sorted:
                 if new_word not in extra_terms:
                     expanded_words[qnum].append(new_word)
 
+'''
 for qnum in qnums_sorted:
     print("Expanded words for qnum =", qnum, " = ", expanded_words[qnum])
 ## collected all expanded words , now rerank
