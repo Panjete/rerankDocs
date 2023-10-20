@@ -37,8 +37,8 @@ metadata_file = os.path.join(collection_dir, "metadata.csv")
 pdf_json = os.path.join(collection_dir, "document_parses/pdf_json")
 pmc_json = os.path.join(collection_dir, "document_parses/pmc_json")
 
-already_learnt = True ## TODO: set to false in the start
-expand_top_k = 10
+already_learnt = False ## TODO: set to false in the start
+expand_top_k = 5
 mu = 100
 
 
