@@ -4,42 +4,34 @@ from read_qfile import qfile
 from read_csv import rcsv
 import os
 from math import log
-from rm1 import get_collection_stats, score_topic, score_text,\
-      generate_background, get_text_stats, get_document_stats, score_word
+from rm1 import generate_background, get_text_stats, get_document_stats, score_word
 
 aparser = argparse.ArgumentParser(description="Process filenames")
 aparser.add_argument("query_file", nargs=1)
 aparser.add_argument("top_100_file", nargs=1)
 aparser.add_argument("collection_dir", nargs=1)
 aparser.add_argument("output_file", nargs=1)
-aparser.add_argument("expansions_file", nargs=1)
 args = aparser.parse_args()
 
-# query_file = args.query_file[0]
-# top_100_file = args.top_100_file[0]
-# collection_dir = args.collection_dir[0]
-# output_file = args.output_file[0]
-# expansions_file = args.expansions_file[0]
+query_file = args.query_file[0]
+top_100_file = args.top_100_file[0]
+collection_dir = args.collection_dir[0]
+output_file = args.output_file[0]
 
 ## Initialise parameters for local runs
-query_file = "covid19-topics.xml"
-top_100_file = "t40-top-100.txt"
-collection_dir = "/Users/gsp/Downloads/2020-07-16/"
-output_file = "out.txt"
-expansions_file = "exp.txt"
+# query_file = "covid19-topics.xml"
+# top_100_file = "t40-top-100.txt"
+# collection_dir = "/Users/gsp/Downloads/2020-07-16"
+# output_file = "out.txt"
+## Call script using ./lm_rerank.sh covid19-topics.xml t40-top-100.txt /Users/gsp/Downloads/2020-07-16 out.txt
 
-metadata_file = collection_dir + "metadata.csv"
-pdf_json = collection_dir + "document_parses/pdf_json"
-pmc_json = collection_dir + "document_parses/pmc_json"
-
-
+metadata_file = os.path.join(collection_dir, "metadata.csv")
+pdf_json = os.path.join(collection_dir, "document_parses/pdf_json")
+pmc_json = os.path.join(collection_dir, "document_parses/pmc_json")
 
 t40t100 = rt100(top_100_file) ## contains an dictionary of Qnum -> array of tuples, (CORDid, Rank, Score)
 qmapping = qfile(query_file)  ## mapping TopicNum -> (TopicNum, Query, Question, Narrative)
 file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (pdf_file, pmc_file) 
-
-
-
 
 mu = 100 ## Hyper-Parameter
 
@@ -50,7 +42,7 @@ for qnum in qnums_sorted:
     print("Processing qnum =", qnum)
     top100 = t40t100[qnum] # top 100 for this topic
     topic_num, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
-    queryterms = q_question ### TODO: Analyse choice
+    queryterms = q_query ### TODO: Analyse choice
     this_q = {} 
 
     ## Instead of completely global, choosing background to be the top 100 instead
@@ -62,7 +54,7 @@ for qnum in qnums_sorted:
         doc_path = ""  # For storing the preferred source
 
         if(data_type<2): ## Happens when pmc or pdf available, prefers pmc
-            doc_path = collection_dir+ data_entry
+            doc_path = os.path.join(collection_dir, data_entry)
             links_of_link_avb_files.append(doc_path)
             local_vocabs[corduid] = get_document_stats(doc_path)
         else:

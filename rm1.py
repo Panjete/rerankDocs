@@ -28,6 +28,8 @@ def get_text_stats(text):
             freq[word] = 1
     return freq, len(words)
 
+## from all the documents that have a pdf/pmc, and the text of docs that don't
+## return the freq map and size as the general background
 def generate_background(list_paths, text):
     ## Generate background from the top100 documents per query
     ## Some of these documents have a pdf/pmc, while some have just the text extracted from metadata.csv
@@ -63,7 +65,6 @@ def score_word(word, corduid, mu, local_vocabs, global_vocab, global_size):
     return numerator/denominator
 
 ## Not using functions beyond this point
-
 ## Get background stats and size
 def get_collection_stats(dirname1, dirname2):
     glob_freq = {}
@@ -105,4 +106,5 @@ def score_text(words, text, global_vocab, gvs,  mu):
             score += (log2(numerator/denominator))
         #score += (log2(numerator/denominator))
     return score
+
 #print(get_document_stats("/Users/gsp/Downloads/2020-07-16/document_parses/pdf_json/0a0afb5dc02afa81689e0e75afe2f9a21ce09e70.json")["pharmacological"])

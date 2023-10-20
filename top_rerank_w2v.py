@@ -5,10 +5,9 @@ from read_csv import rcsv
 from read_tjson import read_text_json
 import subprocess
 from math import log
-from rm1 import get_collection_stats, score_topic, score_text,\
-      generate_background, get_text_stats, get_document_stats, score_word
+from rm1 import generate_background, get_text_stats, get_document_stats, score_word
 import numpy as np
-
+import os
 
 aparser = argparse.ArgumentParser(description="Process filenames")
 aparser.add_argument("query_file", nargs=1)
@@ -16,19 +15,27 @@ aparser.add_argument("top_100_file", nargs=1)
 aparser.add_argument("collection_dir", nargs=1)
 aparser.add_argument("output_file", nargs=1)
 aparser.add_argument("expansions_file", nargs=1)
-args = aparser.parse_args()
 
+args = aparser.parse_args()
+query_file = args.query_file[0]
+top_100_file = args.top_100_file[0]
+collection_dir = args.collection_dir[0]
+output_file = args.output_file[0]
+expansions_file = args.expansions_file[0]
 
 ## Initialise parameters for local runs
-query_file = "covid19-topics.xml"
-top_100_file = "t40-top-100.txt"
-collection_dir = "/Users/gsp/Downloads/2020-07-16/"
-output_file = "out_w2v.txt"
-expansions_file = "exp.txt"
+# query_file = "covid19-topics.xml"
+# top_100_file = "t40-top-100.txt"
+# collection_dir = "/Users/gsp/Downloads/2020-07-16/"
+# output_file = "out_w2v.txt"
+# expansions_file = "exp.txt"
+## Call script using ./w2v_rerank.sh covid19-topics.xml t40-top-100.txt /Users/gsp/Downloads/2020-07-16 out_w2v.txt exp.txt
 
-metadata_file = collection_dir + "metadata.csv"
-pdf_json = collection_dir + "document_parses/pdf_json"
-pmc_json = collection_dir + "document_parses/pmc_json"
+
+
+metadata_file = os.path.join(collection_dir, "metadata.csv")
+pdf_json = os.path.join(collection_dir, "document_parses/pdf_json")
+pmc_json = os.path.join(collection_dir, "document_parses/pmc_json")
 
 already_learnt = True ## TODO: set to false in the start
 expand_top_k = 10
@@ -51,7 +58,7 @@ for qnum in qnums_sorted:
         data_type, data_entry = file_locs_mapping[corduid]
         doc_path = ""  # For storing the preferred source
         if(data_type <2): ## Happens when pmc or pdf available, prefers pmc
-            doc_path = collection_dir + data_entry
+            doc_path = os.path.join(collection_dir, data_entry)
             this_q += read_text_json(doc_path) + " "
         else: ## Happens when only metadata available
             this_q += data_entry + " "

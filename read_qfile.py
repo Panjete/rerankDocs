@@ -28,11 +28,6 @@ def qfile(queryfile):
             outistr.append(issstr.translate(translation_table))
         return outistr
 
-
-    pruned_queries = list(map(prune, t_queries))
-    pruned_questions = list(map(prune, t_questions))
-    pruned_narratives = list(map(prune, t_narratives))
-
     mapping = {}
     for i in range(len(t_num)):
          mapping[t_num[i]] = (t_num[i], prune(t_queries[i]), prune(t_questions[i]), prune(t_narratives[i]))

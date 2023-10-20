@@ -1,6 +1,7 @@
 import json
 import re
 
+## returns pruned text after parsing the json file passed in
 def read_text_json(filename):
     with open(filename, "r") as json_file:
         data = json.load(json_file)

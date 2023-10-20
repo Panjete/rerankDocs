@@ -3,48 +3,27 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
 
 ## To Handle :- 
 
-1. Considering COVID-19 to be one word currently
-2. Is it guarenteed we'll have only 40 topics?
-3. I am lowercasing queries, text and  -- actually, should I?
-
-4. Assuming that all queries have a number, and non-empty fields in query, question, and narrrative
-
-5. metedata.csv sould have 192510 but has 191175 entries - Duplicates, resolved
-
-6. Use os library to join directories instead
-
-7. Guarentees on json documents?
-8. Add matadata to json reads. Include Bibrefs?
-
-9. What happens when there is neither pdf and pmc - happens for 8l411r1w -- Handled, read from .csv
-
 10. Updated word2vec implementations by changing malloc.h ->stdlib.h -- make patch file
-
-11. When multiple documents available, I just choose the first
 
 12. remove \use{amspackage} latex tags
 
-13. Issue with CSV reader --updated
 
-14. PMC documents don't have abstract in them
+- RM1 scores, mu = 200, questions :  0.1415, 0.6028, 0.6089, 0.5139
+- RM1 scores, mu = 100, questions :  0.1421, 0.6249, 0.6094, 0.5159
+- RM1 scores, mu = 50, questions :  0.1416, 0.6300, 0.5932, 0.5122
+- RM1 scores, mu = 20, questions :  0.1407, 0.6026, 0.5800, 0.5056
+- RM1 scores, mu = 10, questions :  0.1399, 0.5745, 0.5680, 0.4965
+- RM1 scores, mu =  1, questions :  0.1363, 0.5207, 0.5297, 0.4700
 
-15. What happens when word given to find closest meaning of, doesn't exist?
+- RM1 scores, mu = 100, narratives :  0.1421, 0.6249, 0.6094, 0.5159
+- RM1 scores, mu = 50, narratives :  0.1416, 0.6300, 0.5932, 0.5122
+- RM1 scores, mu = 10, narratives :  0.1399, 0.5745, 0.5680, 0.4965
 
-- Baseline Task 1 scores, mu = 200, questions :  0.1393, 0.5870, 0.5641, 0.4896
-- Baseline Task 1 scores, mu = 100, questions :  0.1391, 0.5961, 0.5617, 0.4866
-- Baseline Task 1 scores, mu = 50, questions :  0.1384, 0.5892, 0.5503, 0.4832
-- Baseline Task 1 scores, mu = 20, questions :  0.1377, 0.5858, 0.5337, 0.4781
-- Baseline Task 1 scores, mu = 10, questions :  0.1370, 0.5621, 0.5308, 0.4732
-- Baseline Task 1 scores, mu =  1, questions :  0.1357, 0.5590, 0.5155, 0.4641
-
-- Baseline Task 1 scores, mu = 50, narratives :  0.1384, 0.5892, 0.5503, 0.4832
-- Baseline Task 1 scores, mu = 20, narratives :  0.1377, 0.5858, 0.5337, 0.4781
-
-- Baseline Task 1 scores, mu = 1000, query :  0.1379, 0.6042, 0.5665, 0.4883
-- Baseline Task 1 scores, mu = 200, query :  0.1380, 0.5986, 0.5609, 0.4889
-- Baseline Task 1 scores, mu = 100, query :  0.1389, 0.6126, 0.5715, 0.4908
-- Baseline Task 1 scores, mu = 50, query :  0.1389, 0.6181, 0.5734, 0.4921
-
+- RM1 scores, mu = 1000, query :  0.1388, 0.6152, 0.5378, 0.4899
+- RM1 scores, mu = 200, query :  0.1404, 0.6174, 0.5894, 0.5121
+- RM1 scores, mu = 100, query :  0.1417, 0.6303, 0.6055, 0.5193
+- RM1 scores, mu = 50, query :  0.1417, 0.6252, 0.6091, 0.5197
+- RM1 scores, mu = 10, query :  0.1399, 0.5991, 0.5618, 0.5082
 
 
 * w2v_paper, q_narrative, mu = 100, top 10 : 0.1272, 0.4253, 0.4075, 0.3865
