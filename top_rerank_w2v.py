@@ -31,11 +31,14 @@ pdf_json = collection_dir + "document_parses/pdf_json"
 pmc_json = collection_dir + "document_parses/pmc_json"
 
 already_learnt = True ## TODO: set to false in the start
+expand_top_k = 10
+mu = 100
+
 
 t40t100 = rt100(top_100_file) ## contains an dictionary of Qnum -> array of tuples, (CORDid, Rank, Score)
 qmapping = qfile(query_file)  ## mapping TopicNum -> (TopicNum, Query, Question, Narrative)
 file_locs_mapping = rcsv(metadata_file) ## mapping from cord_id -> (0, pmc_file) | (1, pdf_file) | (2, text) | (3, "") 
-mu = 100
+
 ## Collecting symbols for w2v collection
 ## This loop is able to write 40 documents, each containing text from top100 of that query
 ## These 40 interim documents will be used to train w2v binary file, later
@@ -89,19 +92,12 @@ expanded_words = {}
 extra_terms = ["of", "the", "is", "a", "an", "to"]
 for qnum in qnums_sorted:
     vector_file = "intm_data/vector_" + str(qnum) + ".bin"
-    dest_file = "intm_data/nw_" + str(qnum) + ".txt"
     qqnum, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
-    words = q_query ### TODO: Analyse choice
+    words = q_narr ### TODO: Analyse choice
     words_string = " ".join(words)
-    # command = "python " + vector_file + " " + dest_file + " " + words_string
-    # process = subprocess.run(command, shell=True)
-    # process.wait()
-    # #stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    # stdout_output = process.stdout.decode('utf-8')
-    # stderr_output = process.stderr.decode('utf-8')
+    expanded_words[qnum] = [] 
     with open(vector_file, 'r') as f:
         lines = f.readlines()
-
 
     map_index_word = {} ## stores words -> index mapping
     map_word_index = {} ## stores index -> words mapping
@@ -128,25 +124,15 @@ for qnum in qnums_sorted:
     query_vector[a] = 1
     distance_scores = np.dot(U_mul_Ut, query_vector)
 
-
     ## multiply U * Ut * q
-    sorted_indices = np.argsort(distance_scores.flatten())
-    top_k_indices = sorted_indices[:20]
+    sorted_indices = np.argsort(distance_scores.flatten())[::-1]
+    top_k_indices = sorted_indices[:expand_top_k]
     top_k_words = [map_word_index[i] for i in top_k_indices]
-    with open(dest_file, 'w') as f:
-        for word in top_k_words:
-            f.write(word +' ')
+    for word in top_k_words:
+        if word not in extra_terms:
+                expanded_words[qnum].append(word)
     print("Expansion words found for qnum =", qnum)
 
-
-for qnum in qnums_sorted:
-    nw_file = "intm_data/nw_" + str(qnum) + ".txt"
-    expanded_words[qnum] = [] 
-    with open(nw_file, "r") as f:
-        nw_lines= f.read().split()
-        for line in nw_lines:
-            if line not in extra_terms:
-                expanded_words[qnum].append(line)
 '''
 ## finding nearest words for all query terms
 for qnum in qnums_sorted:
@@ -195,7 +181,7 @@ for qnum in qnums_sorted:
     print("Processing qnum =", qnum)
     top100 = t40t100[qnum] # top 100 for this topic
     topic_num, q_query, q_question, q_narr = qmapping[qnum] # get all data of this topic
-    queryterms = q_query + expanded_words[qnum] ### TODO: Analyse choice
+    queryterms = q_narr + expanded_words[qnum] ### TODO: Analyse choice
     this_q = {} 
 
     ## Instead of completely global, choosing background to be the top 100 instead
@@ -242,3 +228,10 @@ with open(output_file, 'w') as f:
             f.write(str(qnum) + " Q0 " + corduid + " " + str(i) + " " + val + " " + "runid1\n")
             i += 1
         
+with open(expansions_file, 'w') as f:
+    for qnum in qnums_sorted:
+        f.write(str(qnum) + " : ")
+        for word in expanded_words[qnum]:
+            f.write(str(word) + " ")
+        f.write("\n")
+            

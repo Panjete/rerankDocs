@@ -1,1 +1,0 @@
-probability vector values layer function mean value size input space output linear weight weighted error distributions maximum average kernel matrix 

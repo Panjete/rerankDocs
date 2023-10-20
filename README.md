@@ -46,10 +46,32 @@ Psuedo Relevance Feedback using Query Expansion and Reranking
 - Baseline Task 1 scores, mu = 50, query :  0.1389, 0.6181, 0.5734, 0.4921
 
 
-* rm1, q_query, mu = 100 : 0.1421, 0.6249, 0.6094, 0.5159
 
-* w2v, q_question, mu = 100 : 0.1284, 0.4375, 0.4228, 0.3955
-* w2v, q_query, mu = 100 : 0.1284, 0.4375, 0.4228, 0.3955
+* w2v_paper, q_narrative, mu = 100, top 10 : 0.1272, 0.4253, 0.4075, 0.3865
+* w2v_paper, q_narrative, mu = 100, top 5 : 0.1383, 0.6066, 0.5827, 0.4873
+* w2v_paper, q_narrative, mu = 100, top 2 : 0.1417, 0.6271, 0.6145, 0.5166  
+
+* w2v_paper, q_question, mu = 100, top 10 : 0.1272, 0.4253, 0.4075, 0.3865
+* w2v_paper, q_question, mu = 100, top 5 : 0.1383, 0.6066, 0.5827, 0.4873
+* w2v_paper, q_question, mu = 100, top 2 : 0.1417, 0.6271, 0.6145, 0.5166  
+
+* w2v_paper, q_question, mu = 50, top 10 : 0.1272, 0.4253, 0.4075, 0.3865
+* w2v_paper, q_question, mu = 50, top 5 : 0.1384, 0.6207, 0.5797, 0.4886
+* w2v_paper, q_question, mu = 50, top 2 : 0.1415, 0.6370, 0.5996, 0.5150
+
+* w2v_paper, q_query, mu = 50, top 20 : 0.1272, 0.4253, 0.4075, 0.3865
+* w2v_paper, q_query, mu = 50, top 10 : 0.1372, 0.5729, 0.5469, 0.4913
+* w2v_paper, q_query, mu = 50, top 5 : 0.1400, 0.6029, 0.5725, 0.5056
+* w2v_paper, q_query, mu = 50, top 2 : 0.1398, 0.6089, 0.5925, 0.5123
+* w2v_paper, q_query, mu = 50, top 1 : 0.1409, 0.6224, 0.6036, 0.5191
+
+* w2v_paper, q_query, mu = 100, top 20 : 0.1272, 0.4253, 0.4075, 0.3865
+* w2v_paper, q_query, mu = 100, top 10 : 0.1399, 0.6014, 0.5833, 0.5010
+* w2v_paper, q_query, mu = 100, top 5 : 0.1399, 0.5964, 0.5784, 0.5057
+* w2v_paper, q_query, mu = 100, top 2 : 0.1401, 0.6104, 0.5937, 0.5123
+* w2v_paper, q_query, mu = 100, top 1 : 0.1407, 0.6268, 0.5998, 0.5160
+
+
 
 ### FILE STRUCTURE 
 
