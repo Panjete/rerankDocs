@@ -1,40 +1,40 @@
-1 : sarbecovirus pandemic origin understanding sarscov2 
-2 : affect extent spread how factors 
-3 : certificates people safe immunity will 
-4 : death respiratory causes mortality cause 
-5 : drugs antiviral therapeutic therapeutics vivo 
-6 : fda devices immunoassays serological now 
-7 : detect detecting cross-reactivity do serological 
-8 : testing aki share how understanding 
-9 : pandemic covid-19 march canada outbreak 
-10 : reducing distancing non-pharmaceutical spread epicenter 
-11 : oxygenation syndrome extracorporeal ill membrane 
-12 : home closure activities school distancing 
-13 : transmission virus humans asymptomatic disease 
-14 : super spreaders spreader active sses 
-15 : host environment droplets contaminated genetic 
-16 : survive remain periods longer long 
-17 : search clinicaltrialsgov registered trials we 
-18 : protect community versus preventing against 
-19 : soap hand alcohol-based wash sanitizer 
-20 : blockers arbs risk raas ci 
-21 : towns rural counties rates fatality 
-22 : worse prognosis underlying cvd elevation 
-23 : elderly prognosis mellitus risk underlying 
-24 : prognosis risk mortality underlying outcomes 
-25 : illness nlr complications severe pneumonia 
-26 : symptoms atypical cough fever manifestations 
-27 : develop carriers children asymptomatic unreported 
-28 : benefits risks benefit-risk evidence trials 
-29 : repurposable repurposed targets existing options 
-30 : treating therapeutic promising effective controlled 
-31 : flu seasonal spanish pandemic avian 
-32 : birds do hosts reservoir humans 
-33 : trials candidates being platforms currently 
-34 : aki who permission certified persons 
-35 : efforts future insights challenges real-time 
-36 : post-fusion id pre-fusion pdb crystallized 
-37 : ratg13 understand identity pangolin-cov genomic 
-38 : storm pathogenesis pathogenic understanding dysregulation 
-39 : storm syndrome cytokine distress storms 
-40 : how do transmission locations mutations 
+1 : pandemic origin 
+2 : affect extent 
+3 : certificates people 
+4 : death causes 
+5 : drugs antiviral 
+6 : fda devices 
+7 : detect cross-reactivity 
+8 : testing share 
+9 : pandemic covid-19 
+10 : reducing distancing 
+11 : syndrome ill 
+12 : closure home 
+13 : transmission asymptomatic 
+14 : super spreaders 
+15 : environment droplets 
+16 : survive remain 
+17 : search clinicaltrialsgov 
+18 : versus community 
+19 : soap alcohol-based 
+20 : blockers risk 
+21 : towns rural 
+22 : prognosis worse 
+23 : elderly prognosis 
+24 : prognosis risk 
+25 : nlr illness 
+26 : symptoms atypical 
+27 : develop carriers 
+28 : benefits evidence 
+29 : repurposable network-based 
+30 : treating effective 
+31 : flu seasonal 
+32 : birds hosts 
+33 : trials candidates 
+34 : aki who 
+35 : future efforts 
+36 : post-fusion id 
+37 : ratg13 identity 
+38 : storm pathogenesis 
+39 : storm syndrome 
+40 : how do 
